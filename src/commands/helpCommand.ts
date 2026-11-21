@@ -1,0 +1,47 @@
+import { Message, EmbedBuilder } from 'discord.js';
+
+export async function handleHelpCommand(message: Message) {
+  const embed = new EmbedBuilder()
+    .setColor('#38bdf8')
+    .setTitle('🏏 Apex CricVerse: Player Career Manual & Help Center')
+    .setDescription(
+      `Welcome to **Apex CricVerse**, the living multiplayer cricket career simulation on Discord!\n` +
+      `You start as a grassroots rookie and rise to World Cup and Franchise glory.`
+    )
+    .addFields(
+      {
+        name: '🧭 Spatial Campus & Travel Engine',
+        value: `• \`-locations\` — Inspect all 7 campus facilities.\n• \`-travel <alias>\` — Travel between locations (\`cn\`, \`sl\`, \`gp\`, \`pc\`, \`ps\`, \`cp\`, \`ld\`).\n• \`-showroom\` — View exotic vehicles to slash travel cooldowns from 20m down to 1m.\n• \`-vehiclebuy <alias>\` — Purchase a superbike or supercar for your personal garage.`,
+        inline: false
+      },
+      {
+        name: '👤 Player Profile & Development',
+        value: `• \`-profile [@user]\` — View 3-tier career profile (BAT, BOWL, FLD ratings & 15 attributes).\n• \`-setdesc <text>\` — Set your personal player bio/quote (max 100 chars).\n• \`-lb [runs|wickets|coins|fans|tp]\` — View global community leaderboards.`,
+        inline: false
+      },
+      {
+        name: '🏃 Training & Biomechanics Lab',
+        value: `• \`-train\` — Net session at \`#cricket-nets\` to earn Training Points (TP) (30m cooldown).\n• \`-train vip\` — High-performance VIP coaching (+6 TP, 6h cooldown).\n• \`-sptrain <attr>\` — Biomechanical development at \`#sports-lab\` (scales dynamically by server rank).\n• \`-recovery\` — Free stamina restore at \`#physio-clinic\` (+30 to +100 Stamina, 12h cooldown).`,
+        inline: false
+      },
+      {
+        name: '📸 Reputation, Brand Deals & Wealth',
+        value: `• \`-advert [sponsor]\` — Sign brand contracts (CEAT, Red Bull, Dream11, MRF) at \`#press-center\`.\n• \`-coaching\` — Youth coaching at \`#club-pavilion\` (+50k coins, 2h cooldown).\n• \`-meetgreet\` — Fan autograph session (+50k fans, 2h cooldown).\n• \`-chirp <text>\` — Post in-character tweets (reactions give +100k or -50k fans; 5% daily decay applies).\n• *Wealth Tax:* 5% daily tax collected on wealth exceeding 1,000,000 coins.`,
+        inline: false
+      },
+      {
+        name: '⚡ Live Matches & Delivery Duels',
+        value: `• \`-duel\` — Test the 10-second delivery mind-game duel (Yorker/Bouncer vs Scoop/Helicopter).\n• \`-match\` — View live matchday schedule or simulate franchise/international fixtures.`,
+        inline: false
+      },
+      {
+        name: '🚀 DevOps Hot-Rollback Engine',
+        value: `• \`-gitpull [branch]\` — Zero-downtime pull with auto-compilation test & instant rollback on error.\n• \`-gitpullback\` — Emergency one-command rollback to previous verified commit.`,
+        inline: false
+      }
+    )
+    .setFooter({ text: 'Apex CricVerse • Connected with LeagueMaster Federation' })
+    .setTimestamp();
+
+  await message.reply({ embeds: [embed] });
+}

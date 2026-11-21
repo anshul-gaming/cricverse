@@ -1,0 +1,188 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Player {
+  id                    String            @id // Discord User ID
+  username              String
+  discriminator         String?
+  avatar                String?
+  bio                   String?           @default("Rookie cricketer dreaming of the World Cup.")
+  archetype             String            @default("POWER_FINISHER")
+  battingHand           String            @default("RIGHT") // RIGHT, LEFT
+  bowlingStyle          String            @default("RIGHT_ARM_FAST")
+  currentLocation       String            @default("cn") // cn, sl, gp, pc, ps, cp, ld
+  travelUntil           DateTime?
+  stamina               Int               @default(100)
+  maxStamina            Int               @default(100)
+  coins                 BigInt            @default(50000)
+  followers             BigInt            @default(1000)
+  trainingPoints        Int               @default(10)
+  vipTier               Int               @default(0)
+  vipExpiresAt          DateTime?
+  lastTrainedAt         DateTime?
+  lastRecoveryAt        DateTime?
+  lastAdvertAt          DateTime?
+  lastCoachedAt         DateTime?
+  lastMeetGreetAt       DateTime?
+  lastTaxDeductedAt     DateTime?
+  lastRelevancyDecayAt  DateTime?
+
+  // 15 Granular Attributes (1 to 99)
+  power                 Int               @default(50)
+  timing                Int               @default(50)
+  defensiveTech         Int               @default(50)
+  running               Int               @default(50)
+  pace                  Int               @default(50)
+  swing                 Int               @default(50)
+  spin                  Int               @default(50)
+  accuracy              Int               @default(50)
+  catching              Int               @default(50)
+  throwing              Int               @default(50)
+  agility               Int               @default(50)
+  glovework             Int               @default(50)
+  composure             Int               @default(50)
+  fitness               Int               @default(50)
+  cricketIq             Int               @default(50)
+
+  // Career Statistics
+  matchesPlayed         Int               @default(0)
+  runsScored            Int               @default(0)
+  ballsFaced            Int               @default(0)
+  highestScore          Int               @default(0)
+  fifties               Int               @default(0)
+  hundreds              Int               @default(0)
+  fours                 Int               @default(0)
+  sixes                 Int               @default(0)
+  notOuts               Int               @default(0)
+  wicketsTaken          Int               @default(0)
+  ballsBowled           Int               @default(0)
+  runsConceded          Int               @default(0)
+  maidens               Int               @default(0)
+  threeWicketHauls      Int               @default(0)
+  fiveWicketHauls       Int               @default(0)
+  catches               Int               @default(0)
+  stumpings             Int               @default(0)
+  runOuts               Int               @default(0)
+  potmCount             Int               @default(0)
+
+  // Subsystems
+  vehicles              PlayerVehicle[]
+  gear                  PlayerGear[]
+  masteries             PlayerMastery[]
+  posts                 CricTwitPost[]
+
+  // Teams & Club
+  clubId                String?
+  club                  FranchiseClub?    @relation(fields: [clubId], references: [id])
+  nationId              String?
+  nation                NationalTeam?     @relation(fields: [nationId], references: [id])
+
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+}
+
+model PlayerVehicle {
+  id              String    @id @default(cuid())
+  playerId        String
+  player          Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  vehicleKey      String
+  name            String
+  cooldownMinutes Int
+  purchasedAt     DateTime  @default(now())
+
+  @@index([playerId])
+}
+
+model PlayerGear {
+  id              String    @id @default(cuid())
+  playerId        String
+  player          Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  gearType        String    // BAT, SPIKES, GLOVES
+  name            String
+  statBoost       Int
+  expiresAt       DateTime
+
+  @@index([playerId])
+}
+
+model PlayerMastery {
+  id              String    @id @default(cuid())
+  playerId        String
+  player          Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  masteryKey      String
+  level           Int       @default(1)
+  unlockedAt      DateTime  @default(now())
+
+  @@unique([playerId, masteryKey])
+}
+
+model FranchiseClub {
+  id              String    @id @default(cuid())
+  guildId         String
+  name            String
+  alias           String    @unique
+  emoji           String    @default("🏏")
+  captainId       String?
+  viceCaptainId   String?
+  budget          BigInt    @default(50000000)
+  players         Player[]
+  matches         MatchRecord[] @relation("ClubMatches")
+}
+
+model NationalTeam {
+  id              String    @id @default(cuid())
+  guildId         String
+  name            String
+  alias           String    @unique
+  flagEmoji       String
+  captainId       String?
+  viceCaptainId   String?
+  players         Player[]
+  matches         MatchRecord[] @relation("NationMatches")
+}
+
+model MatchRecord {
+  id              String         @id @default(cuid())
+  guildId         String
+  format          String         @default("T10")
+  competitionType String         @default("FRANCHISE")
+  pitchType       String         @default("HIGHWAY")
+  dewActive       Boolean        @default(false)
+  homeTeamName    String
+  awayTeamName    String
+  homeScore       Int            @default(0)
+  homeWickets     Int            @default(0)
+  homeOvers       Float          @default(0.0)
+  awayScore       Int            @default(0)
+  awayWickets     Int            @default(0)
+  awayOvers       Float          @default(0.0)
+  winnerTeam      String?
+  winMargin       String?
+  potmUserId      String?
+  telemetryJson   String?        @db.Text
+  createdAt       DateTime       @default(now())
+
+  clubMatchId     String?
+  club            FranchiseClub? @relation("ClubMatches", fields: [clubMatchId], references: [id])
+  nationMatchId   String?
+  nation          NationalTeam?  @relation("NationMatches", fields: [nationMatchId], references: [id])
+}
+
+model CricTwitPost {
+  id              String    @id @default(cuid())
+  guildId         String
+  playerId        String
+  player          Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  content         String
+  likes           Int       @default(0)
+  dislikes        Int       @default(0)
+  createdAt       DateTime  @default(now())
+
+  @@index([guildId, createdAt])
+}
