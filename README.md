@@ -80,6 +80,13 @@ During high-leverage deliveries, bowlers and batsmen engage in a **10-second sec
 | | `-coaching` | Coach academy rookies (+50k coins, 2h cooldown) | Club Pavilion (`#club-pavilion`) |
 | | `-meetgreet` | Autograph signing session (+50k fans, 2h cooldown) | Club Pavilion (`#club-pavilion`) |
 | | `-chirp <text>` | Post a message on CricTwit for peer reactions | Everywhere |
+| **Matches & DRS** | `-duel [@user]` | 10-second delivery mind-game duel with interactive buttons | Everywhere |
+| | `-match [t5\|t10]` | Live over-by-over match with RHB/LHB synergy & Cricinfo news recap | Everywhere |
+| | `-pitchreport [type]` | Inspect pitch moisture, cracks, and dew forecast | Everywhere |
+| | `-toss <heads\|tails>` | Matchday coin flip for batting or bowling first | Everywhere |
+| | `-drs [lbw\|edge] [call]` | Third Umpire Hawk-Eye & UltraEdge Snicko decision review | Everywhere |
+| **Masteries** | `-masteries` | View unlocked batting & bowling signature techniques | Everywhere |
+| | `-mastery upgrade <move>` | Spend TP & coins to upgrade signature moves (Lvl 1 to 5) | Everywhere |
 | **DevOps** | `-gitpull [branch]` | Hot pull with auto-compilation test & zero-downtime rollback | Bot Owner |
 | | `-gitpullback` | Emergency one-command rollback to previous working commit | Bot Owner |
 

@@ -35,8 +35,13 @@ export async function handleHelpCommand(message: Message) {
         inline: false
       },
       {
-        name: '⚡ Live Matches & Delivery Duels',
-        value: `• \`-duel [@user]\` — 10-second delivery mind-game duel (Yorker/Bouncer vs Scoop/Helicopter).\n• \`-match [t5|t10]\` — Live over-by-over match simulation with POTM permanent +2 upgrades!\n• \`-pitchreport [green|dust|highway]\` — Inspect pitch moisture and dew forecast.\n• \`-toss <heads|tails>\` — Matchday coin flip for batting or bowling first.`,
+        name: '⚡ Live Matches, Delivery Duels & DRS',
+        value: `• \`-duel [@user]\` — 10-second delivery mind-game duel (Yorker/Bouncer vs Scoop/Helicopter).\n• \`-match [t5|t10]\` — Live over-by-over match with RHB/LHB synergy, pressure meters, and Cricinfo news coverage!\n• \`-drs [lbw|edge] [out|notout]\` — Third Umpire Hawk-Eye & UltraEdge Decision Review System.\n• \`-pitchreport [green|dust|highway]\` — Inspect pitch moisture and dew forecast.\n• \`-toss <heads|tails>\` — Matchday coin flip for batting or bowling first.`,
+        inline: false
+      },
+      {
+        name: '🌟 Specialization Trees & Masteries',
+        value: `• \`-masteries\` — Inspect signature moves (Helicopter, 360° Ramp, 150km Yorker, Carrom Ball, Knuckle Float).\n• \`-mastery upgrade <move_code>\` — Spend TP & coins to upgrade signature moves from Level 1 to 5 for game-changing duel advantages.`,
         inline: false
       },
       {

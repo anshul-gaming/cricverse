@@ -3,7 +3,8 @@ import { handleProfileCommand, handleSetDescCommand, handleLeaderboardCommand } 
 import { handleTravelCommand, handleLocationsCommand, handleShowroomCommand, handleVehicleBuyCommand } from '../commands/travelCommands.js';
 import { handleTrainCommand, handleSpTrainCommand, handleRecoveryCommand } from '../commands/trainingCommands.js';
 import { handleAdvertCommand, handleCoachingCommand, handleMeetGreetCommand, handleChirpCommand } from '../commands/socialCommands.js';
-import { handleDuelCommand, handleMatchCommand, handlePitchReportCommand, handleTossCommand } from '../commands/matchCommands.js';
+import { handleDuelCommand, handleMatchCommand, handlePitchReportCommand, handleTossCommand, handleDrsCommand } from '../commands/matchCommands.js';
+import { handleMasteryCommand } from '../commands/masteryCommands.js';
 import { handleBuyCommand, handleIntelCommand } from '../commands/marketCommands.js';
 import { handleHelpCommand } from '../commands/helpCommand.js';
 import { handleCricVerseGitPull, handleCricVerseGitPullBack } from '../services/gitService.js';
@@ -94,6 +95,16 @@ export async function onMessageCreate(message: Message) {
       case 'toss':
       case 'coin':
         await handleTossCommand(message, args);
+        break;
+      case 'drs':
+      case 'review':
+        await handleDrsCommand(message, args);
+        break;
+
+      // Specialization Trees & Signature Masteries
+      case 'masteries':
+      case 'mastery':
+        await handleMasteryCommand(message, args);
         break;
 
       // Social Media & Economics

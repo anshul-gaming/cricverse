@@ -9,6 +9,8 @@ import {
 import { prisma } from '../database/prisma.js';
 import { PitchType, getPitchReport, simulateDelivery, calculateMatchImpact, PlayerMatchStats } from '../engines/matchEngine.js';
 import { resolveDeliveryDuel, BowlerChoice, BatterChoice } from '../engines/duelEngine.js';
+import { simulateDrsReview, AppealType, OnFieldDecision } from '../engines/drsEngine.js';
+import { generateMatchNewsArticle } from '../engines/cricinfoEngine.js';
 import { dispatchMatchTelemetry } from '../services/leagueMasterBridge.js';
 
 export async function handlePitchReportCommand(message: Message, args: string[]) {
@@ -58,19 +60,38 @@ export async function handleTossCommand(message: Message, args: string[]) {
   await message.reply({ embeds: [embed] });
 }
 
+export async function handleDrsCommand(message: Message, args: string[]) {
+  const appealArg = (args[0]?.toLowerCase() === 'edge' || args[0]?.toLowerCase() === 'caught')
+    ? 'CAUGHT_BEHIND'
+    : 'LBW';
+
+  const onFieldDecisionArg = args[1]?.toLowerCase() === 'notout' ? 'NOT_OUT' : 'OUT';
+
+  const opponent = message.mentions.users.first()?.username || 'Starc';
+  const drs = simulateDrsReview(appealArg, onFieldDecisionArg, opponent, message.author.username);
+
+  const embed = new EmbedBuilder()
+    .setColor(drs.finalDecision === 'OUT' ? '#e74c3c' : '#2ecc71')
+    .setTitle(`📡 DRS REVIEW: ${drs.headline}`)
+    .setDescription(
+      `**Appeal:** \`${drs.appealType}\` | **On-Field Call:** \`${drs.onFieldDecision}\`\n\n` +
+      `\`\`\`text\n${drs.graphicBox}\n\`\`\`\n` +
+      `${drs.commentary}\n\n` +
+      `⚖️ **Final Decision:** **${drs.finalDecision}**\n` +
+      `🔄 **Review Status:** **${drs.reviewRetained ? 'RETAINED ✅' : 'LOST ❌'}**`
+    )
+    .setFooter({ text: 'Apex CricVerse Third Umpire & Hawk-Eye Telemetry' })
+    .setTimestamp();
+
+  await message.reply({ embeds: [embed] });
+}
+
 export async function handleDuelCommand(message: Message) {
   const opponent = message.mentions.users.first();
   const isPvP = !!opponent && opponent.id !== message.author.id;
 
   const bowlerName = isPvP ? opponent.username : 'Express Strike Bot';
   const batterName = message.author.username;
-
-  const bowlerRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-    new ButtonBuilder().setCustomId('duel_yorker').setLabel('🎯 Inswing Yorker').setStyle(ButtonStyle.Primary),
-    new ButtonBuilder().setCustomId('duel_bouncer').setLabel('🚀 145km/h Bouncer').setStyle(ButtonStyle.Danger),
-    new ButtonBuilder().setCustomId('duel_slower').setLabel('🌀 Slower Cutter').setStyle(ButtonStyle.Secondary),
-    new ButtonBuilder().setCustomId('duel_wide').setLabel('📐 Tramline Line').setStyle(ButtonStyle.Secondary)
-  );
 
   const batterRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder().setCustomId('duel_helicopter').setLabel('🚁 Helicopter Shot').setStyle(ButtonStyle.Success),
@@ -150,7 +171,7 @@ export async function handleMatchCommand(message: Message, args: string[]) {
   const startEmbed = new EmbedBuilder()
     .setColor('#38bdf8')
     .setTitle(`🏟️ ${homeTeam} vs ${awayTeam} (${formatArg.toUpperCase()} Live Match)`)
-    .setDescription(`Pitch: **${pitchType}** | Format: **${totalOvers} Overs per side**\n\n*Simulating 1st Innings...*`)
+    .setDescription(`Pitch: **${pitchType}** | Format: **${totalOvers} Overs per side**\n\n*Simulating 1st Innings with RHB/LHB Synergy and Pressure Dynamics...*`)
     .setTimestamp();
 
   const matchMsg = await message.reply({ embeds: [startEmbed] });
@@ -159,6 +180,9 @@ export async function handleMatchCommand(message: Message, args: string[]) {
   let homeScore = 0;
   let homeWickets = 0;
   let dotStreak = 0;
+  let partnership = 0;
+  let isRhbLhb = true;
+
   const homeStats: PlayerMatchStats = {
     id: message.author.id,
     name: message.author.username,
@@ -182,8 +206,20 @@ export async function handleMatchCommand(message: Message, args: string[]) {
     const overNum = Math.floor((b - 1) / 6);
     const ballInOver = ((b - 1) % 6) + 1;
 
-    const delivery = simulateDelivery(pitchType, false, false, overNum, dotStreak, 'Mitchell Starc', message.author.username);
+    const delivery = simulateDelivery(
+      pitchType,
+      false,
+      false,
+      overNum,
+      dotStreak,
+      'Mitchell Starc',
+      message.author.username,
+      partnership,
+      isRhbLhb
+    );
+
     homeScore += delivery.runs;
+    partnership += delivery.runs;
     homeStats.balls++;
 
     if (delivery.runs === 0 && !delivery.isWicket) dotStreak++;
@@ -196,6 +232,7 @@ export async function handleMatchCommand(message: Message, args: string[]) {
     if (delivery.isWicket) {
       homeWickets++;
       homeStats.isOut = true;
+      partnership = 0; // Reset partnership
       highlights.push(`❌ ${overNum}.${ballInOver}: ${delivery.commentary}`);
     } else if (delivery.isBoundary) {
       highlights.push(`${delivery.runs === 6 ? '💥' : '🎯'} ${overNum}.${ballInOver}: ${delivery.commentary}`);
@@ -207,17 +244,34 @@ export async function handleMatchCommand(message: Message, args: string[]) {
   let awayScore = 0;
   let awayWickets = 0;
   dotStreak = 0;
+  partnership = 0;
 
   for (let b = 1; b <= ballsTotal; b++) {
     if (awayWickets >= 10 || awayScore >= target) break;
     const overNum = Math.floor((b - 1) / 6);
 
-    const delivery = simulateDelivery(pitchType, true, true, overNum, dotStreak, message.author.username, 'David Warner');
+    const delivery = simulateDelivery(
+      pitchType,
+      true,
+      true,
+      overNum,
+      dotStreak,
+      message.author.username,
+      'David Warner',
+      partnership,
+      false
+    );
+
     awayScore += delivery.runs;
+    partnership += delivery.runs;
+
     if (delivery.runs === 0 && !delivery.isWicket) dotStreak++;
     else dotStreak = 0;
 
-    if (delivery.isWicket) awayWickets++;
+    if (delivery.isWicket) {
+      awayWickets++;
+      partnership = 0;
+    }
   }
 
   // Determine Winner
@@ -238,8 +292,8 @@ export async function handleMatchCommand(message: Message, args: string[]) {
   const potmPoints = calculateMatchImpact(homeStats);
   const potmBoostAttribute = 'power';
 
-  // Dispatch Telemetry to LeagueMaster
-  await dispatchMatchTelemetry({
+  // Dispatch Telemetry & Store Match Record
+  const telemetryData = {
     matchId: `cric_${Date.now()}`,
     competition: 'Apex Premier League',
     format: totalOvers === 10 ? 'T10' : 'T5',
@@ -255,8 +309,18 @@ export async function handleMatchCommand(message: Message, args: string[]) {
       rating: potmPoints,
       statUpgrade: { attribute: potmBoostAttribute, boost: 2 }
     },
-    keyMoments: []
-  }).catch(() => {});
+    keyMoments: highlights.slice(0, 4).map((h, i) => ({
+      over: i + 1,
+      ball: 1,
+      type: 'SIX' as const,
+      description: h
+    }))
+  };
+
+  await dispatchMatchTelemetry(telemetryData).catch(() => {});
+
+  // Generate Cricinfo Newspaper Story
+  const newsArticle = generateMatchNewsArticle(telemetryData);
 
   const finalEmbed = new EmbedBuilder()
     .setColor(winner === homeTeam ? '#2ecc71' : '#f1c40f')
@@ -272,4 +336,16 @@ export async function handleMatchCommand(message: Message, args: string[]) {
     .setTimestamp();
 
   await matchMsg.edit({ embeds: [finalEmbed] });
+
+  // Post the Cricinfo sports newspaper article
+  const newsEmbed = new EmbedBuilder()
+    .setColor('#0284c7')
+    .setTitle(newsArticle.headline.replace(/📰/g, '').trim())
+    .setDescription(newsArticle.markdownContent)
+    .setFooter({ text: 'Apex Cricinfo Wire • Official Tournament Media' })
+    .setTimestamp();
+
+  if ('send' in message.channel) {
+    await (message.channel as any).send({ embeds: [newsEmbed] });
+  }
 }
