@@ -94,6 +94,7 @@ During high-leverage deliveries, bowlers and batsmen engage in a **10-second sec
 | **Spectator Fantasy** | `-fantasy [create\|lb]` | Build Dream XI fantasy lineup with 2x captain / 1.5x vice-captain | Everywhere |
 | | `-odds [home] [away]` | View live in-play win probabilities and bookmaker odds | Everywhere |
 | | `-predict <team> <coins>` | Place prediction bets on match outcomes | Everywhere |
+| **Server Setup** | `-setup` | Automatically creates all 7 campus facilities, categories & channels | Admin |
 | **DevOps** | `-gitpull [branch]` | Hot pull with auto-compilation test & zero-downtime rollback | Bot Owner |
 | | `-gitpullback` | Emergency one-command rollback to previous working commit | Bot Owner |
 

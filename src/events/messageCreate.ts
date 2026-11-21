@@ -8,6 +8,7 @@ import { handleMasteryCommand } from '../commands/masteryCommands.js';
 import { handleBuyCommand, handleIntelCommand } from '../commands/marketCommands.js';
 import { handleAuctionCommand, handleBidCommand, handleRtmCommand, handleClubsCommand } from '../commands/auctionCommands.js';
 import { handleFantasyCommand, handleOddsCommand, handlePredictCommand } from '../commands/fantasyCommands.js';
+import { handleSetupCommand } from '../commands/setupCommand.js';
 import { handleHelpCommand } from '../commands/helpCommand.js';
 import { handleCricVerseGitPull, handleCricVerseGitPullBack } from '../services/gitService.js';
 import { logger } from '../utils/logger.js';
@@ -155,7 +156,12 @@ export async function onMessageCreate(message: Message) {
         await handleChirpCommand(message, args);
         break;
 
-      // Help
+      // Help & Server Setup
+      case 'setup':
+      case 'setupcampus':
+      case 'serversetup':
+        await handleSetupCommand(message);
+        break;
       case 'help':
       case 'commands':
         await handleHelpCommand(message);

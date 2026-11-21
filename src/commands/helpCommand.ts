@@ -55,6 +55,11 @@ export async function handleHelpCommand(message: Message) {
         inline: false
       },
       {
+        name: '🛠️ Server Administration & Campus Setup',
+        value: `• \`-setup\` — Automatically create all 7 campus facilities, arena categories, and media channels with rich welcome guides.`,
+        inline: false
+      },
+      {
         name: '🚀 DevOps Hot-Rollback Engine',
         value: `• \`-gitpull [branch]\` — Zero-downtime pull with auto-compilation test & instant rollback on error.\n• \`-gitpullback\` — Emergency one-command rollback to previous verified commit.`,
         inline: false
