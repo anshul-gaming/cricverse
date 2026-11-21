@@ -6,3 +6,4 @@ dist/
 .cricverse_last_commit
 .DS_Store
 generated/
+pnpm-lock.yaml

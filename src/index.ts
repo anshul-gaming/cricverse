@@ -4,6 +4,7 @@ dotenv.config();
 import http from 'http';
 import { CricVerseClient } from './client/CricVerseClient.js';
 import { onMessageCreate } from './events/messageCreate.js';
+import { startKeepAliveWorker } from './services/keepAliveService.js';
 import { logger } from './utils/logger.js';
 
 async function bootstrap() {
@@ -17,6 +18,8 @@ async function bootstrap() {
   });
   server.listen(port, () => {
     logger.info(`Cloud health check listening on port ${port}`);
+    // Start 9-minute self-pinger to prevent Render sleep
+    startKeepAliveWorker();
   });
 
   const client = new CricVerseClient();
