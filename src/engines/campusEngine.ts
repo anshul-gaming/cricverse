@@ -108,7 +108,7 @@ export async function travelToLocation(
     const oldChannel = channels.find(c => c && c.name.toLowerCase().includes(prevLoc.channelName.toLowerCase()) && c.isTextBased());
     if (oldChannel) {
       await (oldChannel as any).permissionOverwrites.edit(member.id, {
-        [PermissionFlagsBits.ViewChannel.toString()]: false
+        ViewChannel: false
       }).catch(() => {});
     }
 
@@ -116,9 +116,9 @@ export async function travelToLocation(
     const newChannel = channels.find(c => c && c.name.toLowerCase().includes(targetLoc.channelName.toLowerCase()) && c.isTextBased());
     if (newChannel) {
       await (newChannel as any).permissionOverwrites.edit(member.id, {
-        [PermissionFlagsBits.ViewChannel.toString()]: true,
-        [PermissionFlagsBits.SendMessages.toString()]: true,
-        [PermissionFlagsBits.ReadMessageHistory.toString()]: true
+        ViewChannel: true,
+        SendMessages: true,
+        ReadMessageHistory: true
       }).catch(() => {});
     }
   } catch (permErr) {
