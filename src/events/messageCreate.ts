@@ -3,6 +3,8 @@ import { handleProfileCommand, handleSetDescCommand, handleLeaderboardCommand } 
 import { handleTravelCommand, handleLocationsCommand, handleShowroomCommand, handleVehicleBuyCommand } from '../commands/travelCommands.js';
 import { handleTrainCommand, handleSpTrainCommand, handleRecoveryCommand } from '../commands/trainingCommands.js';
 import { handleAdvertCommand, handleCoachingCommand, handleMeetGreetCommand, handleChirpCommand } from '../commands/socialCommands.js';
+import { handleDuelCommand, handleMatchCommand, handlePitchReportCommand, handleTossCommand } from '../commands/matchCommands.js';
+import { handleBuyCommand, handleIntelCommand } from '../commands/marketCommands.js';
 import { handleHelpCommand } from '../commands/helpCommand.js';
 import { handleCricVerseGitPull, handleCricVerseGitPullBack } from '../services/gitService.js';
 import { logger } from '../utils/logger.js';
@@ -64,6 +66,34 @@ export async function onMessageCreate(message: Message) {
       case 'recovery':
       case 'physio':
         await handleRecoveryCommand(message);
+        break;
+
+      // Pro Shop & Matchday Equipment
+      case 'buy':
+      case 'shop':
+        await handleBuyCommand(message, args);
+        break;
+      case 'intel':
+      case 'scout':
+        await handleIntelCommand(message);
+        break;
+
+      // Matches & Delivery Mind-Game Duels
+      case 'duel':
+      case 'ball':
+        await handleDuelCommand(message);
+        break;
+      case 'match':
+      case 'play':
+        await handleMatchCommand(message, args);
+        break;
+      case 'pitchreport':
+      case 'pitch':
+        await handlePitchReportCommand(message, args);
+        break;
+      case 'toss':
+      case 'coin':
+        await handleTossCommand(message, args);
         break;
 
       // Social Media & Economics

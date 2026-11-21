@@ -30,8 +30,13 @@ export async function handleHelpCommand(message: Message) {
         inline: false
       },
       {
+        name: '🛍️ Pro Shop & Matchday Equipment',
+        value: `• \`-buy\` — Inspect pro shop gear catalog at \`#gear-pavilion\`.\n• \`-buy sd\` — Sports Drink (+50 Stamina, 100k coins).\n• \`-buy <bat|spikes|gloves>\` — Equip +10 matchday attribute boosts (500k coins).\n• \`-intel\` — Free daily scouting brief giving opposition weaknesses (+1 to +6 random boost).`,
+        inline: false
+      },
+      {
         name: '⚡ Live Matches & Delivery Duels',
-        value: `• \`-duel\` — Test the 10-second delivery mind-game duel (Yorker/Bouncer vs Scoop/Helicopter).\n• \`-match\` — View live matchday schedule or simulate franchise/international fixtures.`,
+        value: `• \`-duel [@user]\` — 10-second delivery mind-game duel (Yorker/Bouncer vs Scoop/Helicopter).\n• \`-match [t5|t10]\` — Live over-by-over match simulation with POTM permanent +2 upgrades!\n• \`-pitchreport [green|dust|highway]\` — Inspect pitch moisture and dew forecast.\n• \`-toss <heads|tails>\` — Matchday coin flip for batting or bowling first.`,
         inline: false
       },
       {
