@@ -95,6 +95,9 @@ During high-leverage deliveries, bowlers and batsmen engage in a **10-second sec
 | | `-odds [home] [away]` | View live in-play win probabilities and bookmaker odds | Everywhere |
 | | `-predict <team> <coins>` | Place prediction bets on match outcomes | Everywhere |
 | **Server Setup** | `-setup` | Automatically creates all 7 campus facilities, categories & channels | Admin |
+| | `-hidecat <cat> [@role]` | Hide an entire category and sync channels | Admin |
+| | `-showcat <cat> [@role]` | Reveal a category and unlock channels | Admin |
+| | `-campushide <on\|off>` | Toggle between Spatial Travel Mode (hidden) and Open Campus Mode (visible) | Admin |
 | **DevOps** | `-gitpull [branch]` | Hot pull with auto-compilation test & zero-downtime rollback | Bot Owner |
 | | `-gitpullback` | Emergency one-command rollback to previous working commit | Bot Owner |
 

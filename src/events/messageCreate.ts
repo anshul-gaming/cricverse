@@ -9,6 +9,7 @@ import { handleBuyCommand, handleIntelCommand } from '../commands/marketCommands
 import { handleAuctionCommand, handleBidCommand, handleRtmCommand, handleClubsCommand } from '../commands/auctionCommands.js';
 import { handleFantasyCommand, handleOddsCommand, handlePredictCommand } from '../commands/fantasyCommands.js';
 import { handleSetupCommand } from '../commands/setupCommand.js';
+import { handleHideCategoryCommand, handleShowCategoryCommand, handleCampusHideToggle } from '../commands/adminCommands.js';
 import { handleHelpCommand } from '../commands/helpCommand.js';
 import { handleCricVerseGitPull, handleCricVerseGitPullBack } from '../services/gitService.js';
 import { logger } from '../utils/logger.js';
@@ -162,6 +163,21 @@ export async function onMessageCreate(message: Message) {
       case 'serversetup':
         await handleSetupCommand(message);
         break;
+
+      // Category Visibility & Customization
+      case 'hidecat':
+      case 'hidecategory':
+        await handleHideCategoryCommand(message, args);
+        break;
+      case 'showcat':
+      case 'showcategory':
+        await handleShowCategoryCommand(message, args);
+        break;
+      case 'campushide':
+      case 'spatialmode':
+        await handleCampusHideToggle(message, args);
+        break;
+
       case 'help':
       case 'commands':
         await handleHelpCommand(message);

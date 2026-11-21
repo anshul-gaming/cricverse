@@ -55,8 +55,8 @@ export async function handleHelpCommand(message: Message) {
         inline: false
       },
       {
-        name: '🛠️ Server Administration & Campus Setup',
-        value: `• \`-setup\` — Automatically create all 7 campus facilities, arena categories, and media channels with rich welcome guides.`,
+        name: '🛠️ Server Administration & Category Customization',
+        value: `• \`-setup\` — Automatically create all 7 campus facilities, arena categories, and media channels with rich welcome guides.\n• \`-hidecat <category> [@role]\` — Instantly hide an entire category and lock all its channels from @everyone or a specific role.\n• \`-showcat <category> [@role]\` — Reveal a hidden category and sync channel permissions.\n• \`-campushide <on|off>\` — Toggle between Spatial Travel Mode (facilities hidden until -travel) and Open Campus Mode (all facilities visible to all).`,
         inline: false
       },
       {
