@@ -76,6 +76,7 @@ model Player {
   gear                  PlayerGear[]
   masteries             PlayerMastery[]
   posts                 CricTwitPost[]
+  auctionLots           AuctionLot[]
 
   // Teams & Club
   clubId                String?
@@ -131,8 +132,11 @@ model FranchiseClub {
   captainId       String?
   viceCaptainId   String?
   budget          BigInt    @default(50000000)
+  rtmCards        Int       @default(2)
   players         Player[]
   matches         MatchRecord[] @relation("ClubMatches")
+  previousLots    AuctionLot[]  @relation("PreviousClubLots")
+  wonLots         AuctionLot[]  @relation("WinningClubLots")
 }
 
 model NationalTeam {
@@ -186,3 +190,55 @@ model CricTwitPost {
 
   @@index([guildId, createdAt])
 }
+
+model AuctionLot {
+  id              String         @id @default(cuid())
+  guildId         String         @default("global")
+  playerId        String
+  player          Player         @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  previousClubId  String?
+  previousClub    FranchiseClub? @relation("PreviousClubLots", fields: [previousClubId], references: [id])
+  winningClubId   String?
+  winningClub     FranchiseClub? @relation("WinningClubLots", fields: [winningClubId], references: [id])
+  basePrice       BigInt         @default(2000000)
+  currentBid      BigInt         @default(2000000)
+  isSold          Boolean        @default(false)
+  rtmExercised    Boolean        @default(false)
+  status          String         @default("PENDING") // PENDING, ACTIVE, RTM_WINDOW, SOLD, UNSOLD
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([guildId, status])
+}
+
+model FantasyTeam {
+  id                  String    @id @default(cuid())
+  userId              String
+  guildId             String    @default("global")
+  teamName            String
+  selectedPlayerIds   String    // Comma-separated user IDs
+  captainId           String?
+  viceCaptainId       String?
+  totalPoints         Float     @default(0.0)
+  coinsWon            BigInt    @default(0)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@unique([userId, guildId])
+}
+
+model MatchPrediction {
+  id              String    @id @default(cuid())
+  userId          String
+  matchId         String
+  predictedTeam   String
+  stake           BigInt
+  odds            Float
+  settled         Boolean   @default(false)
+  won             Boolean   @default(false)
+  payout          BigInt    @default(0)
+  createdAt       DateTime  @default(now())
+
+  @@index([matchId, settled])
+}
+

@@ -6,6 +6,8 @@ import { handleAdvertCommand, handleCoachingCommand, handleMeetGreetCommand, han
 import { handleDuelCommand, handleMatchCommand, handlePitchReportCommand, handleTossCommand, handleDrsCommand } from '../commands/matchCommands.js';
 import { handleMasteryCommand } from '../commands/masteryCommands.js';
 import { handleBuyCommand, handleIntelCommand } from '../commands/marketCommands.js';
+import { handleAuctionCommand, handleBidCommand, handleRtmCommand, handleClubsCommand } from '../commands/auctionCommands.js';
+import { handleFantasyCommand, handleOddsCommand, handlePredictCommand } from '../commands/fantasyCommands.js';
 import { handleHelpCommand } from '../commands/helpCommand.js';
 import { handleCricVerseGitPull, handleCricVerseGitPullBack } from '../services/gitService.js';
 import { logger } from '../utils/logger.js';
@@ -105,6 +107,34 @@ export async function onMessageCreate(message: Message) {
       case 'masteries':
       case 'mastery':
         await handleMasteryCommand(message, args);
+        break;
+
+      // Franchise Mega Auctions & RTM Cards
+      case 'auction':
+        await handleAuctionCommand(message, args);
+        break;
+      case 'bid':
+        await handleBidCommand(message, args);
+        break;
+      case 'rtm':
+        await handleRtmCommand(message, args);
+        break;
+      case 'clubs':
+      case 'franchises':
+        await handleClubsCommand(message);
+        break;
+
+      // Spectator Fantasy & Live Odds
+      case 'fantasy':
+      case 'f':
+        await handleFantasyCommand(message, args);
+        break;
+      case 'odds':
+        await handleOddsCommand(message, args);
+        break;
+      case 'predict':
+      case 'bet':
+        await handlePredictCommand(message, args);
         break;
 
       // Social Media & Economics

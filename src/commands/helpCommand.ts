@@ -45,6 +45,16 @@ export async function handleHelpCommand(message: Message) {
         inline: false
       },
       {
+        name: '🏆 Franchise Ecosystem & Mega Auctions',
+        value: `• \`-auction [start|status]\` — Enter the live Mega Auction room or put a player on the gavel.\n• \`-bid <club_alias> <coins>\` — Place a bid on behalf of your franchise.\n• \`-rtm <club_alias>\` — Slap down a Right-to-Match card to retain your former star at the highest bid price.\n• \`-clubs\` — Inspect franchise teams, remaining purses, and roster lists.`,
+        inline: false
+      },
+      {
+        name: '🎮 Spectator Fantasy (Dream XI) & Live Odds',
+        value: `• \`-fantasy [create|lb]\` — Build your fantasy lineup with captain/vice-captain multipliers & track manager leaderboard.\n• \`-odds [home] [away]\` — Live in-play bookmaker odds & win probability based on RRR, wickets & dew.\n• \`-predict <team> <coins>\` — Place prediction bets on match outcomes.`,
+        inline: false
+      },
+      {
         name: '🚀 DevOps Hot-Rollback Engine',
         value: `• \`-gitpull [branch]\` — Zero-downtime pull with auto-compilation test & instant rollback on error.\n• \`-gitpullback\` — Emergency one-command rollback to previous verified commit.`,
         inline: false

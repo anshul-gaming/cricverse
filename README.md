@@ -87,6 +87,13 @@ During high-leverage deliveries, bowlers and batsmen engage in a **10-second sec
 | | `-drs [lbw\|edge] [call]` | Third Umpire Hawk-Eye & UltraEdge Snicko decision review | Everywhere |
 | **Masteries** | `-masteries` | View unlocked batting & bowling signature techniques | Everywhere |
 | | `-mastery upgrade <move>` | Spend TP & coins to upgrade signature moves (Lvl 1 to 5) | Everywhere |
+| **Mega Auction** | `-auction [start\|status]` | Enter the live auction room or put a player on the gavel | Everywhere |
+| | `-bid <club_alias> <coins>` | Place a franchise bid on the active player lot | Everywhere |
+| | `-rtm <club_alias>` | Exercise Right-to-Match card to match winning bid and keep player | Everywhere |
+| | `-clubs` | View official franchise clubs, budgets, and rosters | Everywhere |
+| **Spectator Fantasy** | `-fantasy [create\|lb]` | Build Dream XI fantasy lineup with 2x captain / 1.5x vice-captain | Everywhere |
+| | `-odds [home] [away]` | View live in-play win probabilities and bookmaker odds | Everywhere |
+| | `-predict <team> <coins>` | Place prediction bets on match outcomes | Everywhere |
 | **DevOps** | `-gitpull [branch]` | Hot pull with auto-compilation test & zero-downtime rollback | Bot Owner |
 | | `-gitpullback` | Emergency one-command rollback to previous working commit | Bot Owner |
 
