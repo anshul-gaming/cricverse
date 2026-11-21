@@ -105,7 +105,7 @@ export async function travelToLocation(
     const channels = await guild.channels.fetch();
 
     // 1. Find previous location channel and hide it
-    const oldChannel = channels.find(c => c && c.name.toLowerCase() === prevLoc.channelName.toLowerCase() && c.isTextBased());
+    const oldChannel = channels.find(c => c && c.name.toLowerCase().includes(prevLoc.channelName.toLowerCase()) && c.isTextBased());
     if (oldChannel) {
       await (oldChannel as any).permissionOverwrites.edit(member.id, {
         [PermissionFlagsBits.ViewChannel.toString()]: false
@@ -113,7 +113,7 @@ export async function travelToLocation(
     }
 
     // 2. Find target location channel and reveal it
-    const newChannel = channels.find(c => c && c.name.toLowerCase() === targetLoc.channelName.toLowerCase() && c.isTextBased());
+    const newChannel = channels.find(c => c && c.name.toLowerCase().includes(targetLoc.channelName.toLowerCase()) && c.isTextBased());
     if (newChannel) {
       await (newChannel as any).permissionOverwrites.edit(member.id, {
         [PermissionFlagsBits.ViewChannel.toString()]: true,
