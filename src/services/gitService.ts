@@ -39,8 +39,12 @@ export async function handleCricVerseGitPull(message: Message, args: string[]) {
     await statusMsg.edit(`📥 **Pulled commit \`${currentCommit.trim()}\`**: *"${commitMessage.trim()}"*\n⚙️ **Validating Prisma types & TypeScript build...**`);
 
     try {
-      await runCmd('pnpm prisma generate', path.join(process.cwd(), 'cricverse'));
-      await runCmd('pnpm tsc --noEmit', path.join(process.cwd(), 'cricverse'));
+      const projectDir = fs.existsSync(path.join(process.cwd(), 'package.json'))
+        ? process.cwd()
+        : (fs.existsSync(path.join(process.cwd(), 'cricverse', 'package.json')) ? path.join(process.cwd(), 'cricverse') : process.cwd());
+
+      await runCmd('npx prisma generate', projectDir);
+      await runCmd('npx tsc', projectDir);
     } catch (buildError: any) {
       const errorOutput = buildError.stderr || buildError.stdout || buildError.message || 'Build Error';
       await runCmd(`git reset --hard ${previousCommit}`);
@@ -102,9 +106,13 @@ export async function handleCricVerseGitPullBack(message: Message) {
       targetSha = prevSha.trim();
     }
 
+    const projectDir = fs.existsSync(path.join(process.cwd(), 'package.json'))
+      ? process.cwd()
+      : (fs.existsSync(path.join(process.cwd(), 'cricverse', 'package.json')) ? path.join(process.cwd(), 'cricverse') : process.cwd());
+
     await runCmd(`git reset --hard ${targetSha}`);
-    await runCmd('pnpm prisma generate', path.join(process.cwd(), 'cricverse'));
-    await runCmd('pnpm tsc --noEmit', path.join(process.cwd(), 'cricverse'));
+    await runCmd('npx prisma generate', projectDir);
+    await runCmd('npx tsc', projectDir);
 
     const { stdout: rolledCommit } = await runCmd('git rev-parse --short HEAD');
     const rollbackEmbed = new EmbedBuilder()
